@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <math.h>
-#include "dsp_util.h"
 #include "dsp_wave.h"
 
 unsigned int dsp_convert_to_twos_complement(double y, int dac_resol_bits)
@@ -10,8 +9,7 @@ unsigned int dsp_convert_to_twos_complement(double y, int dac_resol_bits)
  int neg_scale = 1 << (dac_resol_bits-1);
  if (vref_n < 0) vref_n = -vref_n;
  int N = dac_resol_bits;
- char a[N_DSP_VEC_MAX], result[N_DSP_VEC_MAX], one_vec[N_DSP_VEC_MAX], tmp[N_DSP_VEC_MAX];
- int data, res;
+ int data, res, pad;
 
  if (y >= 0) {
   y = pos_scale*(y/vref_p);
@@ -22,11 +20,14 @@ unsigned int dsp_convert_to_twos_complement(double y, int dac_resol_bits)
   y = neg_scale*(y/vref_n);
   data = y;
 
-  dsp_store_num(a, data, N);
-  dsp_store_num(one_vec, 1, N);
-  dsp_notvec(a, tmp,  N);
-  dsp_unsigned_add(tmp, one_vec, result, N);
-  res = dsp_todec(result, N);
+  pad = 1 << N;
+  pad--;
+
+  data = ~data;
+  data &= pad;
+  data++;
+  
+  res = data;
  }
 
  return res;

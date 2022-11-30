@@ -1,7 +1,7 @@
 APP = dsp_test
 
 # Add any other object files to this list below
-APP_OBJS = dsp_util.o dsp_main.o dsp_wave.o
+APP_OBJS = dsp_main.o dsp_wave.o
 CFLAGS = -DDEBUG
 
 all: build
